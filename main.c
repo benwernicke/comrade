@@ -21,7 +21,8 @@ static size_t write_data(void* ptr, size_t size, size_t nmemb, FILE* stream)
     return written;
 }
 
-static void run_file_from_str(const char* name, const char* content)
+static void run_file_from_str(
+    const char* const restrict name, const char* const restrict content)
 {
     INFO("creating file: %s", name);
     FILE* fh = fopen(name, "w");
@@ -30,14 +31,15 @@ static void run_file_from_str(const char* name, const char* content)
     fclose(fh);
 }
 
-static void run_dir(const char* name)
+static void run_dir(const char* const name)
 {
     INFO("creating directory: %s", name);
     int err = mkdir(name, S_IRWXU);
     PANIC_IF(err, "could not mkdir '%s' %s", name, strerror(errno));
 }
 
-static void run_remote_file(char* name, char* url)
+static void run_remote_file(
+    const char* const restrict name, const char* const restrict url)
 {
     INFO("downloading file: %s", name);
     CURL* curl;
@@ -56,16 +58,16 @@ static void run_remote_file(char* name, char* url)
     }
 }
 
-static void run_cmd(char* cmd)
+static void run_cmd(const char* const cmd)
 {
     INFO("running: '%s'", cmd);
     int err = system(cmd);
     PANIC_IF(err, "cmd: '%s' returned error code %d", cmd, err);
 }
 
-static void run_group(cmd_t* restrict iter, uint32_t sizeof_group)
+static void run_group(const cmd_t* restrict iter, uint32_t sizeof_group)
 {
-    cmd_t* restrict end = iter + sizeof_group;
+    const cmd_t* restrict end = iter + sizeof_group;
 
     for (; iter != end; ++iter) {
         switch (iter->type) {
@@ -84,7 +86,7 @@ static void run_group(cmd_t* restrict iter, uint32_t sizeof_group)
             run_cmd(iter->as.cmd.cmd);
             break;
         case FUNCTION:
-            iter->as.function.fn();
+            iter->as.function.fn((void*)iter->as.function.arg);
             break;
         default:
             PANIC("could not find cmd type");
@@ -97,8 +99,8 @@ int main(int argc, char** argv)
     PANIC_IF(argc != 2, "comrade requires 2 arguments");
 
     uint32_t size = get_sizeof_groups();
-    cmd_group_t* restrict iter = get_groups();
-    cmd_group_t* restrict end = iter + size;
+    const cmd_group_t* restrict iter = get_groups();
+    const cmd_group_t* restrict end = iter + size;
 
     for (; iter != end; ++iter) {
         if (strcmp(iter->name, argv[1]) == 0) {

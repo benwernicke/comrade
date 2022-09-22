@@ -11,7 +11,7 @@ typedef enum {
     FUNCTION,
 } cmd_type_t;
 
-typedef void (*func_f)(void);
+typedef void (*func_f)(void*);
 
 typedef struct cmd_t cmd_t;
 struct cmd_t {
@@ -19,37 +19,38 @@ struct cmd_t {
 
     union {
         struct {
-            char* name;
-            char* url;
+            const char* const name;
+            const char* const url;
         } remote_file;
 
         struct {
-            char* name;
-            char* content;
+            const char* const name;
+            const char* const content;
         } file_from_str;
 
         struct {
-            char* name;
+            const char* const name;
         } dir;
 
         struct {
-            char* cmd;
+            const char* const cmd;
         } cmd;
 
         struct {
-            func_f fn;
+            const func_f fn;
+            const void* const arg;
         } function;
     } as;
 };
 
 typedef struct cmd_group_t cmd_group_t;
 struct cmd_group_t {
-    char* name;
-    cmd_t* group;
+    const char* const name;
+    const cmd_t* group;
     uint32_t sizeof_group;
 };
 
 uint32_t get_sizeof_groups(void);
-cmd_group_t* get_groups(void);
+const cmd_group_t* get_groups(void);
 
 #endif

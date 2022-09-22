@@ -31,7 +31,8 @@ static char def_beaver[]
       "        rm(\"$(find build -type f)\");\n"
       "        rm(\"out\");\n"
       "    } else {\n"
-      "        fprintf(stderr, \"\\033[31mError:\\033[39m unknown option: '%%s'\\n\", argv[1]);\n"
+      "        fprintf(stderr, \"\\033[31mError:\\033[39m unknown option: "
+      "'%%s'\\n\", argv[1]);\n"
       "        exit(1);\n"
       "    }\n"
       "    return 0;\n"
@@ -58,4 +59,4 @@ static cmd_group_t groups[] = {
 static const uint32_t sizeof_groups = sizeof(groups) / sizeof(*groups);
 
 uint32_t get_sizeof_groups(void) { return sizeof_groups; }
-cmd_group_t* get_groups(void) { return groups; }
+const cmd_group_t* get_groups(void) { return groups; }
