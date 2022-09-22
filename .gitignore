@@ -29,6 +29,8 @@
 *.dylib
 
 # Executables
+beaver
+out
 *.exe
 *.out
 *.app
